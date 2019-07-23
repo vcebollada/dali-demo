@@ -62,7 +62,6 @@ namespace
 std::string startOnQuit;
 
 #include <shared/dali-table-view.cpp>
-#include <shared/file-wrapper.cpp>
 #include <demo/dali-demo.cpp>
 
 #include <examples/alpha-blending-cpu/alpha-blending-cpu-example.cpp>
