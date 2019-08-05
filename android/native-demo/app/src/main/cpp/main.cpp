@@ -328,6 +328,39 @@ bool ShowSoftKeyboard(struct android_app* state)
 
 // "am start -a android.intent.action.MAIN -n com.sec.dali_demo/android.app.NativeActivity --es "start" "blocks.example""
 // adb shell settings put global policy_control immersive.full=com.sec.dali_demo
+void ExtractFontConfig( struct android_app* state, std::string assetFontConfig, std::string fontsPath )
+{
+  AAsset* asset = AAssetManager_open( state->activity->assetManager, assetFontConfig.c_str(), AASSET_MODE_BUFFER );
+  if( asset )
+  {
+    size_t length = AAsset_getLength( asset ) + 1;
+
+    char* buffer = new char[ length ];
+    length = AAsset_read( asset, buffer, length );
+
+    std::string fontConfig = std::string( buffer, length );
+    int i = fontConfig.find("<dir></dir>");
+    if( i != std::string::npos )
+      fontConfig.replace( i + strlen("<dir>"), 0, fontsPath );
+
+    i = fontConfig.find("<cachedir></cachedir>");
+    if( i != std::string::npos )
+      fontConfig.replace( i + strlen("<cachedir>"), 0, fontsPath );
+
+    std::string fontsFontConfig = fontsPath + "/fonts.conf";
+    FILE* file = fopen( fontsFontConfig.c_str(), "wb" );
+    if( file )
+    {
+      fwrite( fontConfig.c_str(), 1, fontConfig.size(), file );
+      fclose( file );
+    }
+
+    delete[] buffer;
+    AAsset_close( asset );
+  }
+}
+
+extern "C" void FcConfigPathInit(const char* path, const char* file);
 
 void android_main( struct android_app* state )
 {
@@ -335,14 +368,18 @@ void android_main( struct android_app* state )
     std::string filesDir = state->activity->internalDataPath;
 
     struct stat st = { 0 };
-    std::string path = filesDir + "/fonts";
+    std::string fontconfigPath = filesDir + "/fonts";
+    setenv( "FONTCONFIG_PATH", fontconfigPath.c_str(), 1 );
+    std::string fontconfigFile = fontconfigPath + "/fonts.conf";
+    setenv( "FONTCONFIG_FILE", fontconfigFile.c_str(), 1 );
+    FcConfigPathInit( fontconfigPath.c_str(), fontconfigFile.c_str() );
 
-    if( stat( path.c_str(), &st ) == -1 )
+    if( stat( fontconfigPath.c_str(), &st ) == -1 )
     {
-      mkdir( filesDir.c_str(), S_IRWXU );
-      ExtractAssets( state, "fonts", filesDir + "/fonts" );
-      ExtractAssets( state, "fonts/dejavu", filesDir + "/fonts/dejavu" );
-      ExtractAssets( state, "fonts/tizen", filesDir + "/fonts/tizen" );
+       mkdir( fontconfigPath.c_str(), S_IRWXU );
+       ExtractFontConfig( state, "fonts/fonts.conf", fontconfigPath );
+       ExtractAssets( state, "fonts/dejavu", fontconfigPath + "/dejavu" );
+       ExtractAssets( state, "fonts/tizen", fontconfigPath + "/tizen" );
     }
 
 /*
@@ -358,7 +395,7 @@ void android_main( struct android_app* state )
       ExtractAssets( state, "toolkit/styles/images", filesDir + "/toolkit/styles/images" );
     }
 */
-    path = filesDir + "/resources";
+    std::string path = filesDir + "/resources";
     if( stat( path.c_str(), &st ) == -1 )
     {
       mkdir( filesDir.c_str(), S_IRWXU );
