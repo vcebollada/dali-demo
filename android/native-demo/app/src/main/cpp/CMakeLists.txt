@@ -95,92 +95,12 @@ add_library(transition-example-files STATIC
         ${DALI_ANDROID}/dali-demo/examples/transitions/transition-application.cpp)
 
 add_library(dali
-        STATIC
+        SHARED
         IMPORTED )
 
 set_target_properties(dali
         PROPERTIES IMPORTED_LOCATION
-        ${DALI_ANDROID}/dali-demo/android/native-demo/dali/obj/local/${ANDROID_ABI}/libdali.a )
-
-#add_library(dali-core
-#        STATIC
-#        IMPORTED )
-
-#set_target_properties(dali-core
-#        PROPERTIES IMPORTED_LOCATION
-#        ${DALI_ANDROID}/dali-core/build/android/obj/local/${ANDROID_ABI}/libdali-core.a )
-
-#add_library(dali-adaptor
-#        STATIC
-#        IMPORTED )
-
-#set_target_properties(dali-adaptor
-#        PROPERTIES IMPORTED_LOCATION
-#        ${DALI_ANDROID}/dali-adaptor/build/android/obj/local/${ANDROID_ABI}/libdali-adaptor.a )
-
-#add_library(dali-toolkit
-#        STATIC
-#        IMPORTED )
-
-#set_target_properties(dali-toolkit
-#        PROPERTIES IMPORTED_LOCATION
-#        ${DALI_ANDROID}/dali-toolkit/build/android/obj/local/${ANDROID_ABI}/libdali-toolkit.a )
-
-add_library(exif
-        STATIC
-        IMPORTED )
-
-set_target_properties(exif
-        PROPERTIES IMPORTED_LOCATION
-        ${DALI_ANDROID}/android-dependencies/libexif/obj/local/${ANDROID_ABI}/libexif.a )
-
-add_library(freetype
-        STATIC
-        IMPORTED )
-
-set_target_properties(freetype
-        PROPERTIES IMPORTED_LOCATION
-        ${DALI_ANDROID}/android-dependencies/libfreetype/obj/local/${ANDROID_ABI}/libfreetype.a )
-
-add_library(fontconfig
-        STATIC
-        IMPORTED )
-
-set_target_properties(fontconfig
-        PROPERTIES IMPORTED_LOCATION
-        ${DALI_ANDROID}/android-dependencies/libfontconfig/obj/local/${ANDROID_ABI}/libfontconfig.a )
-
-add_library(harfbuzz
-        STATIC
-        IMPORTED )
-
-set_target_properties(harfbuzz
-        PROPERTIES IMPORTED_LOCATION
-        ${DALI_ANDROID}/android-dependencies/libharfbuzz/obj/local/${ANDROID_ABI}/libharfbuzz.a )
-
-add_library(gif
-        STATIC
-        IMPORTED )
-
-set_target_properties(gif
-        PROPERTIES IMPORTED_LOCATION
-        ${DALI_ANDROID}/android-dependencies/libgif/obj/local/${ANDROID_ABI}/libgif.a )
-
-add_library(jpeg-turbo
-        STATIC
-        IMPORTED )
-
-set_target_properties(jpeg-turbo
-        PROPERTIES IMPORTED_LOCATION
-        ${DALI_ANDROID}/android-dependencies/libjpeg-turbo/obj/local/${ANDROID_ABI}/libjpeg-turbo.a )
-
-add_library(png
-        STATIC
-        IMPORTED )
-
-set_target_properties(png
-        PROPERTIES IMPORTED_LOCATION
-        ${DALI_ANDROID}/android-dependencies/libpng/obj/local/${ANDROID_ABI}/libpng.a )
+        ${DALI_ANDROID}/dali-demo/android/native-demo/dali/obj/local/${ANDROID_ABI}/libdali.so )
 
 # add lib dependencies
 target_link_libraries(native-activity
@@ -195,16 +115,8 @@ target_link_libraries(native-activity
         text-label-example-files
         transition-example-files
         dali
+        log
         android
         native_app_glue
         EGL
-        GLESv3
-        z
-        exif
-        gif
-        jpeg-turbo
-        png
-        log
-        fontconfig
-        freetype
-        harfbuzz)
+        GLESv3)
