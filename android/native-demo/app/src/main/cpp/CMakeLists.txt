@@ -35,12 +35,6 @@ target_include_directories(native-activity PRIVATE
 # DALi
 include_directories(${DALI_ANDROID}/dali-env/android/include)
 include_directories(${DALI_ANDROID}/dali-env/android/include/dali)
-include_directories(${DALI_ANDROID}/android-dependencies/libexif)
-include_directories(${DALI_ANDROID}/android-dependencies/libfontconfig)
-include_directories(${DALI_ANDROID}/android-dependencies/libfreetype)
-include_directories(${DALI_ANDROID}/android-dependencies/libgif)
-include_directories(${DALI_ANDROID}/android-dependencies/libjpeg-turbo)
-include_directories(${DALI_ANDROID}/android-dependencies/libpng)
 include_directories(${DALI_ANDROID}/dali-demo)
 
 add_library(contact-cards-example-files STATIC
