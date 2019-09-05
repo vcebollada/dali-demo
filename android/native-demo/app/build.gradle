@@ -46,6 +46,15 @@ android {
             signingConfig signingConfigs.config
         }
     }
+    packagingOptions {
+        pickFirst 'lib/x86_64/libc++_shared.so'
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['../dali/lib']
+        }
+    }
     lintOptions {
         checkReleaseBuilds false
     }
