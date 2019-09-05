@@ -21,6 +21,7 @@ fi
 if [ ! -d ../../../../dali-env/android ]; then
 TARGET=x86_64 API=25 make headers
 TARGET=armeabi-v7a API=25 make headers
+echo -e "#include <string>\n\nstd::string GetSystemCachePath() { return \"\"; }\n" > ../../../../dali-adaptor/dali/internal/adaptor/common/system-cache-path.cpp
 fi
 
 TARGET=x86_64 API=25 make $@
