@@ -37,6 +37,30 @@ include_directories(${DALI_ANDROID}/dali-env/android/include)
 include_directories(${DALI_ANDROID}/dali-env/android/include/dali)
 include_directories(${DALI_ANDROID}/dali-demo)
 
+# TODO
+#include(ExternalProject)
+
+#ExternalProject_Add(dali-core-project
+#        SOURCE_DIR ${DALI_ANDROID}/dali-core/build/tizen
+#        PREFIX ${DALI_ANDROID}/dali-env/android
+#        CMAKE_ARGS
+#        -DCMAKE_INSTALL_PREFIX=${DALI_ANDROID}/dali-env/android
+#        -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
+#        -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
+#        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE})
+
+#ExternalProject_Get_Property(dali-core-project install_dir)
+
+add_library(dali-core
+        SHARED
+        IMPORTED )
+
+set_target_properties(dali-core
+        PROPERTIES IMPORTED_LOCATION
+        ${DALI_ANDROID}/dali-demo/android/native-demo/dali/lib/${ANDROID_ABI}/libdali-core.so)
+
+#add_dependencies(dali-core dali-core-project)
+
 add_library(contact-cards-example-files STATIC
         ${DALI_ANDROID}/dali-demo/examples/contact-cards/clipped-image.cpp
         ${DALI_ANDROID}/dali-demo/examples/contact-cards/masked-image.cpp
@@ -94,7 +118,7 @@ add_library(dali
 
 set_target_properties(dali
         PROPERTIES IMPORTED_LOCATION
-        ${DALI_ANDROID}/dali-demo/android/native-demo/dali/obj/local/${ANDROID_ABI}/libdali.so )
+        ${DALI_ANDROID}/dali-demo/android/native-demo/dali/lib/${ANDROID_ABI}/libdali.so )
 
 # add lib dependencies
 target_link_libraries(native-activity
@@ -109,8 +133,9 @@ target_link_libraries(native-activity
         text-label-example-files
         transition-example-files
         dali
-        log
+        dali-core
         android
+        log
         native_app_glue
         EGL
         GLESv3)

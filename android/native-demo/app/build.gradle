@@ -82,5 +82,5 @@ task buildDali(type:Exec) {
     commandLine 'sh', './build.sh'
 }
 
-buildDali.dependsOn buildDaliDependencies
-preBuild.dependsOn buildDali
+//buildDali.dependsOn buildDaliDependencies
+//preBuild.dependsOn buildDali

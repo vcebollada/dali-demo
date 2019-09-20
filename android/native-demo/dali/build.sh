@@ -24,5 +24,8 @@ TARGET=armeabi-v7a API=25 make headers
 echo -e "#include <string>\n\nstd::string GetSystemCachePath() { return \"\"; }\n" > ../../../../dali-adaptor/dali/internal/adaptor/common/system-cache-path.cpp
 fi
 
+TARGET=x86_64 ./build_core.sh
+TARGET=armeabi-v7a ./build_core.sh
+
 TARGET=x86_64 API=25 make $@
 TARGET=armeabi-v7a API=25 make $@

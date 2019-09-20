@@ -16,15 +16,12 @@ LOCAL_CFLAGS += -DDALI_STYLE_DIR="\"assets/toolkit/styles/\""
 LOCAL_CFLAGS += -DDALI_STYLE_IMAGE_DIR="\"assets/toolkit/styles/images/\""
 LOCAL_CFLAGS += -DAPPLICATION_RESOURCE_PATH="\"assets/resources\""
 
-LOCAL_CFLAGS += -DDALI_GLES_VERSION=20
-LOCAL_CFLAGS += -DNETWORK_LOGGING_ENABLED
-
 # Warnings, optimisation and debug flags
 # --------------------------------------
 LOCAL_CFLAGS += -w -Wall
 LOCAL_CFLAGS += -g
 ifeq ($(APP_OPTIM),debug)
-#LOCAL_CFLAGS += -DDALI_GL_ERROR_CHECK                             # Extra GL error checking / reporting in Dali renderer
+LOCAL_CFLAGS += -DDALI_GL_ERROR_CHECK                             # Extra GL error checking / reporting in Dali renderer
 LOCAL_CFLAGS += -DDEBUG_ENABLED                                   # Generic flag to enable additional debug in code (toolkit, adaptor, dali, and also libxml)
 LOCAL_CFLAGS += -O0
 ifeq ($(BUILD_NATIVE_TRACE), 1)

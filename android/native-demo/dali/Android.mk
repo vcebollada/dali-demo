@@ -12,23 +12,6 @@ INCLUDE_PATH=$(SRC_PATH)/dali-env/android/include
 
 LOCAL_EXPORT_C_INCLUDES += $(INCLUDE_PATH)
 
-public_api_src_dir=$(SRC_PATH)/dali-core/dali/public-api
-include $(public_api_src_dir)/file.list
-
-devel_api_src_dir = $(SRC_PATH)/dali-core/dali/devel-api
-include $(devel_api_src_dir)/file.list
-
-internal_src_dir=$(SRC_PATH)/dali-core/dali/internal
-include $(internal_src_dir)/file.list
-
-platform_abstraction_src_dir=$(SRC_PATH)/dali-core/dali/integration-api
-include $(platform_abstraction_src_dir)/file.list
-
-cppfiles += $(public_api_src_files) \
-            $(devel_api_src_files) \
-            $(internal_src_files) \
-            $(platform_abstraction_src_files)
-
 adaptor_public_api_dir=$(SRC_PATH)/dali-adaptor/dali/public-api
 include $(adaptor_public_api_dir)/file.list
 
@@ -190,52 +173,55 @@ LOCAL_CFLAGS += -I$(SRC_PATH)/android-dependencies/libharfbuzz
 LOCAL_CFLAGS += -I$(SRC_PATH)/android-dependencies/libjpeg-turbo
 LOCAL_CFLAGS += -I$(SRC_PATH)/android-dependencies/libpng
 
-#LOCAL_CFLAGS += -I$(SRC_PATH)/dali-generated
-# default shaders
-#cppfiles += $(shell find $(SRC_PATH)/dali-generated -name '*.cpp' )
-
 LOCAL_CFLAGS += -I$(SRC_PATH)/dali-toolkit
 LOCAL_CFLAGS += -I$(SRC_PATH)/dali-toolkit/dali-toolkit
 LOCAL_CFLAGS += -I$(SRC_PATH)/dali-toolkit/dali-toolkit/devel-api
 LOCAL_CFLAGS += -I$(SRC_PATH)/dali-toolkit/dali-toolkit/public-api
 
-LOCAL_LDLIBS := -lz -landroid -lEGL -lGLESv3 -llog
-LOCAL_STATIC_LIBRARIES := libpng libgif libexif libjpeg-turbo libfontcontfig libfreetype libharfbuzz
+LOCAL_SHARED_LIBRARIES := dali-core
+LOCAL_STATIC_LIBRARIES := exif jpeg-turbo png gif fontconfig harfbuzz freetype
+LOCAL_LDLIBS += -llog -lz -landroid -lEGL -lGLESv3
 include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := libpng
-LOCAL_SRC_FILES := $(SRC_PATH)/android-dependencies/libpng/obj/local/$(TARGET_ARCH_ABI)/libpng.a
-include $(PREBUILT_STATIC_LIBRARY)
+LOCAL_MODULE := dali-core
+LOCAL_SRC_FILES := $(SRC_PATH)/dali-env/android/lib/$(TARGET_ARCH_ABI)/libdali-core.so
+include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := libgif
-LOCAL_SRC_FILES := $(SRC_PATH)/android-dependencies/libgif/obj/local/$(TARGET_ARCH_ABI)/libgif.a
-include $(PREBUILT_STATIC_LIBRARY)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := libexif
+LOCAL_MODULE := exif
 LOCAL_SRC_FILES := $(SRC_PATH)/android-dependencies/libexif/obj/local/$(TARGET_ARCH_ABI)/libexif.a
 include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := libjpeg-turbo
-LOCAL_SRC_FILES := $(SRC_PATH)/android-dependencies/libjpeg-turbo/obj/local/$(TARGET_ARCH_ABI)/libjpeg-turbo.a
-include $(PREBUILT_STATIC_LIBRARY)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := libfontcontfig
+LOCAL_MODULE := fontconfig
 LOCAL_SRC_FILES := $(SRC_PATH)/android-dependencies/libfontconfig/obj/local/$(TARGET_ARCH_ABI)/libfontconfig.a
 include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := libfreetype
+LOCAL_MODULE := freetype
 LOCAL_SRC_FILES := $(SRC_PATH)/android-dependencies/libfreetype/obj/local/$(TARGET_ARCH_ABI)/libfreetype.a
 include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := libharfbuzz
+LOCAL_MODULE := gif
+LOCAL_SRC_FILES := $(SRC_PATH)/android-dependencies/libgif/obj/local/$(TARGET_ARCH_ABI)/libgif.a
+include $(PREBUILT_STATIC_LIBRARY)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := harfbuzz
 LOCAL_SRC_FILES := $(SRC_PATH)/android-dependencies/libharfbuzz/obj/local/$(TARGET_ARCH_ABI)/libharfbuzz.a
 include $(PREBUILT_STATIC_LIBRARY)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := jpeg-turbo
+LOCAL_SRC_FILES := $(SRC_PATH)/android-dependencies/libjpeg-turbo/obj/local/$(TARGET_ARCH_ABI)/libjpeg-turbo.a
+include $(PREBUILT_STATIC_LIBRARY)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := png
+LOCAL_SRC_FILES := $(SRC_PATH)/android-dependencies/libpng/obj/local/$(TARGET_ARCH_ABI)/libpng.a
+include $(PREBUILT_STATIC_LIBRARY)
+
 
 
