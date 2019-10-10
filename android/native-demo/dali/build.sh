@@ -16,6 +16,7 @@ fi
 if [ "$1" = "clean" ]; then
 echo "Cleaning dali..."
 rm -rf ../../../../dali-env/android
+exit 0
 fi
 
 if [ ! -d ../../../../dali-env/android ]; then

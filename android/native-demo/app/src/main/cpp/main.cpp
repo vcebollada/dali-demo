@@ -24,6 +24,7 @@
 #include <android_native_app_glue.h>
 #include <dali/devel-api/adaptor-framework/application-devel.h>
 #include <dali/integration-api/debug.h>
+#include <dali/integration-api/adaptors/android/android-framework.h>
 
 // from android_native_app_glue.c
 #ifndef NDEBUG
@@ -425,7 +426,10 @@ void android_main( struct android_app* state )
 
     AutoHideNavBar( state );
 
-    Dali::DevelApplication::SetApplicationContext( state );
+    Dali::Integration::AndroidFramework::New();
+    Dali::Integration::AndroidFramework::Get().SetNativeApplication( state );
+    Dali::Integration::AndroidFramework::Get().SetApplicationConfiguration( state->config );
+    Dali::Integration::AndroidFramework::Get().SetApplicationAssets( state->activity->assetManager );
 
     int status = 0;
     if( callParam == "blocks.example" )
