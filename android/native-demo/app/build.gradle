@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+def buildType
+
 android {
     signingConfigs {
         config {
@@ -34,6 +36,7 @@ android {
             ndk {
                 abiFilters "x86_64", "armeabi-v7a"
             }
+            buildType = "debug"
         }
         release {
             minifyEnabled false
@@ -44,6 +47,7 @@ android {
             }
 
             signingConfig signingConfigs.config
+            buildType = "release"
         }
     }
     packagingOptions {
@@ -74,13 +78,19 @@ dependencies {
 
 task buildDaliDependencies(type:Exec) {
     workingDir "../../../../android-dependencies"
-    commandLine 'sh', './buildall.sh'
+    if (buildType == 'release')
+        commandLine 'sh', './buildall.sh'
+    else
+        commandLine 'sh', 'DEBUG=1', './buildall.sh'
 }
 
 task buildDali(type:Exec) {
     workingDir "../dali"
-    commandLine 'sh', './build.sh'
+    if (buildType == "release")
+        commandLine 'sh', './build.sh'
+    else
+        commandLine 'sh', 'DEBUG=1', './build.sh'
 }
 
-//buildDali.dependsOn buildDaliDependencies
-//preBuild.dependsOn buildDali
+buildDali.dependsOn buildDaliDependencies
+preBuild.dependsOn buildDali
