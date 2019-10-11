@@ -16,17 +16,36 @@ fi
 if [ "$1" = "clean" ]; then
 echo "Cleaning dali..."
 rm -rf ../../../../dali-env/android
+rm -rf ./dali-core
 exit 0
 fi
 
 if [ ! -d ../../../../dali-env/android ]; then
-TARGET=x86_64 API=25 make headers
-TARGET=armeabi-v7a API=25 make headers
-echo -e "#include <string>\n\nstd::string GetSystemCachePath() { return \"\"; }\n" > ../../../../dali-adaptor/dali/internal/adaptor/common/system-cache-path.cpp
+mkdir -p ../../../../dali-env/android
+if [ -z "$DEBUG" ]; then
+TARGET=x86_64 ./build_core.sh Release
+TARGET=armeabi-v7a ./build_core.sh Release
+else
+export ENABLE_TRACE=ON
+TARGET=x86_64 ./build_core.sh Debug
+ENABLE_TRACE=ON TARGET=armeabi-v7a ./build_core.sh Debug
 fi
 
-TARGET=x86_64 ./build_core.sh
-TARGET=armeabi-v7a ./build_core.sh
+echo "Copying dali headers..."
+TARGET=x86_64 API=25 make headers
+TARGET=armeabi-v7a API=25 make headers
+cp ./system-cache-path.cpp ../../../../dali-adaptor/dali/internal/adaptor/common/system-cache-path.cpp
+
+fi
+
+if [ -z "$DEBUG" ]; then
+TARGET=x86_64 ./build_core.sh Release
+TARGET=armeabi-v7a ./build_core.sh Release
+else
+export ENABLE_TRACE=ON
+TARGET=x86_64 ./build_core.sh Debug
+TARGET=armeabi-v7a ./build_core.sh Debug
+fi
 
 TARGET=x86_64 API=25 make $@
 TARGET=armeabi-v7a API=25 make $@
