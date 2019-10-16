@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 3.4.1)
 
-set(DALI_ANDROID "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../..")
+get_filename_component(DALI_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../.." ABSOLUTE)
+get_filename_component(DALI_LOCAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../../dali" ABSOLUTE)
+
+# set pkg config
+set(ENV{PKG_CONFIG_PATH}  "${DALI_DIR}/dali-env/android/lib/${ANDROID_ABI}/pkgconfig:$ENV{PKG_CONFIG_PATH}")
+MESSAGE(STATUS "PKG_CONFIG_PATH=$ENV{PKG_CONFIG_PATH}")
+find_package(PkgConfig REQUIRED)
+
+set(ANDROID_SDK $ENV{ANDROID_SDK})
+set(ANDROID_NDK $ENV{ANDROID_NDK})
 
 # build native_app_glue as a static lib
 set(${CMAKE_C_FLAGS}, "${CMAKE_C_FLAGS}")
@@ -33,84 +42,91 @@ target_include_directories(native-activity PRIVATE
     ${ANDROID_NDK}/sources/android/native_app_glue)
 
 # DALi
-include_directories(${DALI_ANDROID}/dali-env/android/include)
-include_directories(${DALI_ANDROID}/dali-env/android/include/dali)
-include_directories(${DALI_ANDROID}/dali-demo)
+include_directories(${DALI_DIR}/dali-env/android/include)
+include_directories(${DALI_DIR}/dali-env/android/include/dali)
+include_directories(${DALI_DIR}/dali-demo)
 
-# TODO
-#include(ExternalProject)
+if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+set(ENABLE_TRACE ON)
+else()
+set(ENABLE_TRACE OFF)
+endif()
 
-#ExternalProject_Add(dali-core-project
-#        SOURCE_DIR ${DALI_ANDROID}/dali-core/build/tizen
-#        PREFIX ${DALI_ANDROID}/dali-env/android
-#        CMAKE_ARGS
-#        -DCMAKE_INSTALL_PREFIX=${DALI_ANDROID}/dali-env/android
+#file(MAKE_DIRECTORY ${DALI_DIR}/dali-core/build/tizen)
+#add_custom_target(
+#        dali-core
+#        PRE_BUILD
+#        COMMAND ${ANDROID_SDK}/cmake/3.10.2.4988404/bin/cmake
+#        ${DALI_DIR}/dali-core/build/tizen
+#        -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+#        -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+#        -DCMAKE_INSTALL_PREFIX=${DALI_DIR}/dali-env/android
+#        -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
+#        -DANDROID_PLATFORM=${ANDROID_PLATFORM}
+#        -DANDROID_ABI=${ANDROID_ABI}
+#        -DANDROID_NDK=${ANDROID_NDK}
+#        -DANDROID_STL=c++_shared
 #        -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
-#        -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
-#        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE})
+#        -DINCLUDE_DIR=${DALI_DIR}/dali-env/android/include
+#        -DLIB_DIR=${DALI_DIR}/dali-env/android/lib/${ANDROID_ABI}
+#        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+#        -DENABLE_TRACE=${ENABLE_TRACE}
+#        COMMAND make && make install
+#)
 
-#ExternalProject_Get_Property(dali-core-project install_dir)
-
-add_library(dali-core
-        SHARED
-        IMPORTED )
-
-set_target_properties(dali-core
-        PROPERTIES IMPORTED_LOCATION
-        ${DALI_ANDROID}/dali-demo/android/native-demo/dali/lib/${ANDROID_ABI}/libdali-core.so)
-
-#add_dependencies(dali-core dali-core-project)
+pkg_check_modules(DALICORE dali-core REQUIRED NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH)
+MESSAGE(STATUS "dali-core libs: ${DALICORE_LDFLAGS}")
 
 add_library(contact-cards-example-files STATIC
-        ${DALI_ANDROID}/dali-demo/examples/contact-cards/clipped-image.cpp
-        ${DALI_ANDROID}/dali-demo/examples/contact-cards/masked-image.cpp
-        ${DALI_ANDROID}/dali-demo/examples/contact-cards/contact-card-layouter.cpp
-        ${DALI_ANDROID}/dali-demo/examples/contact-cards/contact-card.cpp
-        ${DALI_ANDROID}/dali-demo/examples/contact-cards/contact-data.cpp)
+        ${DALI_DIR}/dali-demo/examples/contact-cards/clipped-image.cpp
+        ${DALI_DIR}/dali-demo/examples/contact-cards/masked-image.cpp
+        ${DALI_DIR}/dali-demo/examples/contact-cards/contact-card-layouter.cpp
+        ${DALI_DIR}/dali-demo/examples/contact-cards/contact-card.cpp
+        ${DALI_DIR}/dali-demo/examples/contact-cards/contact-data.cpp)
 
 add_library(clipping-example-files STATIC
-        ${DALI_ANDROID}/dali-demo/examples/clipping/clipping-item-factory.cpp)
+        ${DALI_DIR}/dali-demo/examples/clipping/clipping-item-factory.cpp)
 
 add_library(frame-callback-example-files STATIC
-        ${DALI_ANDROID}/dali-demo/examples/frame-callback/frame-callback.cpp)
+        ${DALI_DIR}/dali-demo/examples/frame-callback/frame-callback.cpp)
 
 add_library(fpp-game-example-files STATIC
-        ${DALI_ANDROID}/dali-demo/examples/fpp-game/fpp-game-tutorial-controller.cpp
-        ${DALI_ANDROID}/dali-demo/examples/fpp-game/game-camera.cpp
-        ${DALI_ANDROID}/dali-demo/examples/fpp-game/game-entity.cpp
-        ${DALI_ANDROID}/dali-demo/examples/fpp-game/game-model.cpp
-        ${DALI_ANDROID}/dali-demo/examples/fpp-game/game-renderer.cpp
-        ${DALI_ANDROID}/dali-demo/examples/fpp-game/game-scene.cpp
-        ${DALI_ANDROID}/dali-demo/examples/fpp-game/game-texture.cpp
-        ${DALI_ANDROID}/dali-demo/examples/fpp-game/game-utils.cpp)
+        ${DALI_DIR}/dali-demo/examples/fpp-game/fpp-game-tutorial-controller.cpp
+        ${DALI_DIR}/dali-demo/examples/fpp-game/game-camera.cpp
+        ${DALI_DIR}/dali-demo/examples/fpp-game/game-entity.cpp
+        ${DALI_DIR}/dali-demo/examples/fpp-game/game-model.cpp
+        ${DALI_DIR}/dali-demo/examples/fpp-game/game-renderer.cpp
+        ${DALI_DIR}/dali-demo/examples/fpp-game/game-scene.cpp
+        ${DALI_DIR}/dali-demo/examples/fpp-game/game-texture.cpp
+        ${DALI_DIR}/dali-demo/examples/fpp-game/game-utils.cpp)
 
 add_library(rendering-skybox-example-files STATIC
-        ${DALI_ANDROID}/dali-demo/examples/rendering-skybox/look-camera.cpp)
+        ${DALI_DIR}/dali-demo/examples/rendering-skybox/look-camera.cpp)
 
 add_library(rendering-basic-pbr-example-files STATIC
-        ${DALI_ANDROID}/dali-demo/examples/rendering-basic-pbr/ktx-loader.cpp
-        ${DALI_ANDROID}/dali-demo/examples/rendering-basic-pbr/model-pbr.cpp
-        ${DALI_ANDROID}/dali-demo/examples/rendering-basic-pbr/model-skybox.cpp
-        ${DALI_ANDROID}/dali-demo/examples/rendering-basic-pbr/obj-loader.cpp)
+        ${DALI_DIR}/dali-demo/examples/rendering-basic-pbr/ktx-loader.cpp
+        ${DALI_DIR}/dali-demo/examples/rendering-basic-pbr/model-pbr.cpp
+        ${DALI_DIR}/dali-demo/examples/rendering-basic-pbr/model-skybox.cpp
+        ${DALI_DIR}/dali-demo/examples/rendering-basic-pbr/obj-loader.cpp)
 
 add_library(simple-visuals-controls STATIC
-        ${DALI_ANDROID}/dali-demo/examples/simple-visuals-control/my-control.cpp
-        ${DALI_ANDROID}/dali-demo/examples/simple-visuals-control/my-control-impl.cpp
-        ${DALI_ANDROID}/dali-demo/examples/simple-visuals-control/simple-visuals-application.cpp)
+        ${DALI_DIR}/dali-demo/examples/simple-visuals-control/my-control.cpp
+        ${DALI_DIR}/dali-demo/examples/simple-visuals-control/my-control-impl.cpp
+        ${DALI_DIR}/dali-demo/examples/simple-visuals-control/simple-visuals-application.cpp)
 
 add_library(styling-example-files STATIC
-        ${DALI_ANDROID}/dali-demo/examples/styling/image-channel-control.cpp
-        ${DALI_ANDROID}/dali-demo/examples/styling/image-channel-control-impl.cpp
-        ${DALI_ANDROID}/dali-demo/examples/styling/styling-application.cpp)
+        ${DALI_DIR}/dali-demo/examples/styling/image-channel-control.cpp
+        ${DALI_DIR}/dali-demo/examples/styling/image-channel-control-impl.cpp
+        ${DALI_DIR}/dali-demo/examples/styling/styling-application.cpp)
 
 add_library(text-label-example-files STATIC
-        ${DALI_ANDROID}/dali-demo/examples/text-label/expanding-buttons.cpp
-        ${DALI_ANDROID}/dali-demo/examples/text-label/expanding-buttons-impl.cpp)
+        ${DALI_DIR}/dali-demo/examples/text-label/expanding-buttons.cpp
+        ${DALI_DIR}/dali-demo/examples/text-label/expanding-buttons-impl.cpp)
 
 add_library(transition-example-files STATIC
-        ${DALI_ANDROID}/dali-demo/examples/transitions/shadow-button.cpp
-        ${DALI_ANDROID}/dali-demo/examples/transitions/shadow-button-impl.cpp
-        ${DALI_ANDROID}/dali-demo/examples/transitions/transition-application.cpp)
+        ${DALI_DIR}/dali-demo/examples/transitions/shadow-button.cpp
+        ${DALI_DIR}/dali-demo/examples/transitions/shadow-button-impl.cpp
+        ${DALI_DIR}/dali-demo/examples/transitions/transition-application.cpp)
 
 add_library(dali
         SHARED
@@ -118,7 +134,9 @@ add_library(dali
 
 set_target_properties(dali
         PROPERTIES IMPORTED_LOCATION
-        ${DALI_ANDROID}/dali-demo/android/native-demo/dali/lib/${ANDROID_ABI}/libdali.so )
+        ${DALI_DIR}/dali-demo/android/native-demo/dali/lib/${ANDROID_ABI}/libdali.so )
+
+add_dependencies(dali dali-core)
 
 # add lib dependencies
 target_link_libraries(native-activity
@@ -133,7 +151,7 @@ target_link_libraries(native-activity
         text-label-example-files
         transition-example-files
         dali
-        dali-core
+        ${DALICORE_LDFLAGS}
         android
         log
         native_app_glue

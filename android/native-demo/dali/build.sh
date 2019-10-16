@@ -28,7 +28,7 @@ TARGET=armeabi-v7a ./build_core.sh Release
 else
 export ENABLE_TRACE=ON
 TARGET=x86_64 ./build_core.sh Debug
-ENABLE_TRACE=ON TARGET=armeabi-v7a ./build_core.sh Debug
+TARGET=armeabi-v7a ./build_core.sh Debug
 fi
 
 echo "Copying dali headers..."
