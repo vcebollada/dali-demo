@@ -3,6 +3,27 @@
 #   https://dl.google.com/android/repository/cmake-3.10.2-linux-x86_64.zip
 #   https://dl.google.com/android/repository/lldb-3.1.4508709-linux-x86_64.zip
 # instructions from https://developer.android.com/ndk/guides/other_build_systems
+
+if [ ! -d "$ANDROID_SDK" ]; then
+# try default path
+if [ -d "$HOME/Android/Sdk" ]; then
+export ANDROID_SDK=$HOME/Android/Sdk
+fi
+fi
+
+if [ ! -d "$ANDROID_NDK" ]; then
+if [ -d $ANDROID_SDK ]; then
+NDK_DIR=$(find $ANDROID_SDK -maxdepth 2 -name ndk-build | sed 's/\/ndk-build//')
+if [ -d "$NDK_DIR" ]; then
+export ANDROID_NDK=$NDK_DIR
+fi
+fi
+fi
+
+if [ ! -d "$DALI_DIR" ]; then
+export DALI_DIR=$(cd ../../../../; pwd)
+fi
+
 export HOST_TAG=linux-x86_64
 export TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/$HOST_TAG
 export AR=$TOOLCHAIN/bin/aarch64-linux-android-ar
