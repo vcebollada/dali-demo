@@ -34,7 +34,7 @@ android {
     buildTypes {
         debug {
             ndk {
-                abiFilters "x86_64", "armeabi-v7a"
+                abiFilters "armeabi-v7a"
             }
             buildType = "debug"
         }
@@ -43,7 +43,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                     'proguard-rules.pro'
             ndk {
-                abiFilters "x86_64", "armeabi-v7a"
+                abiFilters "armeabi-v7a"
             }
 
             signingConfig signingConfigs.config
@@ -51,7 +51,6 @@ android {
         }
     }
     packagingOptions {
-        pickFirst 'lib/x86_64/libc++_shared.so'
         pickFirst 'lib/armeabi-v7a/libc++_shared.so'
     }
     sourceSets {
@@ -77,19 +76,21 @@ dependencies {
 }
 
 task buildDaliDependencies(type:Exec) {
-    workingDir "../../../../android-dependencies"
-    if (buildType == 'release')
-        commandLine 'sh', './buildall.sh'
-    else
-        commandLine 'sh', 'DEBUG=1', './buildall.sh'
+    def daliDir = file('../../../../dali-env/android').getAbsolutePath()
+    environment "PREFIX", daliDir
+    environment "ANDROID_ABI", "armeabi-v7a"
+    environment "ANDROID_PLATFORM", "28"
+    if (buildType == 'debug')
+        environment "DEBUG", "1"
+    workingDir "../../../../android-dependencies/cmake"
+    commandLine 'sh',  './buildall.sh'
 }
 
 task buildDali(type:Exec) {
     workingDir "../dali"
-    if (buildType == "release")
-        commandLine 'sh', './build.sh'
-    else
-        commandLine 'sh', 'DEBUG=1', './build.sh'
+    if (buildType == 'debug')
+        environment "DEBUG", "1"
+    commandLine 'sh', './build.sh'
 }
 
 buildDali.dependsOn buildDaliDependencies
