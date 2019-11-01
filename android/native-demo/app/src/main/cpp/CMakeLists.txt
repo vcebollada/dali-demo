@@ -12,9 +12,9 @@ set(ANDROID_SDK $ENV{ANDROID_SDK})
 set(ANDROID_NDK $ENV{ANDROID_NDK})
 
 # build native_app_glue as a static lib
-set(${CMAKE_C_FLAGS}, "${CMAKE_C_FLAGS}")
-add_library(native_app_glue STATIC
-    ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
+#set(${CMAKE_C_FLAGS}, "${CMAKE_C_FLAGS}")
+#add_library(native_app_glue STATIC
+#    ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 
 add_definitions(-DAPPLICATION_RESOURCE_PATH=\"assets/resources/\")
 add_definitions(-DDEMO_IMAGE_DIR=\"assets/resources/images/\")
@@ -52,30 +52,10 @@ else()
 set(ENABLE_TRACE OFF)
 endif()
 
-#file(MAKE_DIRECTORY ${DALI_DIR}/dali-core/build/tizen)
-#add_custom_target(
-#        dali-core
-#        PRE_BUILD
-#        COMMAND ${ANDROID_SDK}/cmake/3.10.2.4988404/bin/cmake
-#        ${DALI_DIR}/dali-core/build/tizen
-#        -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
-#        -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
-#        -DCMAKE_INSTALL_PREFIX=${DALI_DIR}/dali-env/android
-#        -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
-#        -DANDROID_PLATFORM=${ANDROID_PLATFORM}
-#        -DANDROID_ABI=${ANDROID_ABI}
-#        -DANDROID_NDK=${ANDROID_NDK}
-#        -DANDROID_STL=c++_shared
-#        -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
-#        -DINCLUDE_DIR=${DALI_DIR}/dali-env/android/include
-#        -DLIB_DIR=${DALI_DIR}/dali-env/android/lib/${ANDROID_ABI}
-#        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-#        -DENABLE_TRACE=${ENABLE_TRACE}
-#        COMMAND make && make install
-#)
-
-pkg_check_modules(DALICORE dali-core REQUIRED NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH)
-MESSAGE(STATUS "dali-core libs: ${DALICORE_LDFLAGS}")
+pkg_check_modules(FONTCONFIG fontconfig REQUIRED NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH)
+pkg_check_modules(DALI_CORE dali-core REQUIRED NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH)
+pkg_check_modules(DALI_ADAPTOR dali-adaptor REQUIRED NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH)
+pkg_check_modules(DALI_TOOLKIT dali-toolkit REQUIRED NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH)
 
 add_library(contact-cards-example-files STATIC
         ${DALI_DIR}/dali-demo/examples/contact-cards/clipped-image.cpp
@@ -128,16 +108,6 @@ add_library(transition-example-files STATIC
         ${DALI_DIR}/dali-demo/examples/transitions/shadow-button-impl.cpp
         ${DALI_DIR}/dali-demo/examples/transitions/transition-application.cpp)
 
-add_library(dali
-        SHARED
-        IMPORTED )
-
-set_target_properties(dali
-        PROPERTIES IMPORTED_LOCATION
-        ${DALI_DIR}/dali-demo/android/native-demo/dali/lib/${ANDROID_ABI}/libdali.so )
-
-add_dependencies(dali dali-core)
-
 # add lib dependencies
 target_link_libraries(native-activity
         clipping-example-files
@@ -150,10 +120,11 @@ target_link_libraries(native-activity
         styling-example-files
         text-label-example-files
         transition-example-files
-        dali
-        ${DALICORE_LDFLAGS}
+        ${DALI_TOOLKIT_LDFLAGS}
+        ${DALI_ADAPTOR_LDFLAGS}
+        ${DALI_CORE_LDFLAGS}
+        ${FONTCONFIG_LDFLAGS}
         android
         log
-        native_app_glue
         EGL
         GLESv3)

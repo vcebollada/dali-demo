@@ -55,7 +55,8 @@ android {
     }
     sourceSets {
         main {
-            jniLibs.srcDirs = ['../dali/lib']
+            jniLibs.srcDirs += '../../../../dali-env/android/lib'
+            assets.srcDirs += '../../../../dali-env/android/files'
         }
     }
     lintOptions {
@@ -93,5 +94,20 @@ task buildDali(type:Exec) {
     commandLine 'sh', './build.sh'
 }
 
+task cleanDaliDependencies(type:Exec) {
+    workingDir "../../../../android-dependencies/cmake"
+    commandLine 'sh',  './buildall.sh', 'clean'
+}
+
+task cleanDali(type:Exec) {
+    workingDir "../dali"
+    commandLine 'sh', './build.sh', 'clean'
+}
+
 buildDali.dependsOn buildDaliDependencies
 preBuild.dependsOn buildDali
+
+cleanDali.dependsOn cleanDaliDependencies
+clean.dependsOn cleanDali
+
+

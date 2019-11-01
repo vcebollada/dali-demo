@@ -23,4 +23,5 @@ ${ANDROID_SDK}/cmake/3.10.2.4988404/bin/cmake ${DALI_DIR}/dali-toolkit/build/tiz
 fi
 make
 make install
+cp -R ${DALI_DIR}/dali-toolkit/automated-tests/resources/fonts/* ${DALI_DIR}/dali-env/android/files/fonts
 cd -
