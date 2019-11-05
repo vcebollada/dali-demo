@@ -13,8 +13,8 @@ set(ANDROID_NDK $ENV{ANDROID_NDK})
 
 # build native_app_glue as a static lib
 #set(${CMAKE_C_FLAGS}, "${CMAKE_C_FLAGS}")
-#add_library(native_app_glue STATIC
-#    ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
+add_library(native_app_glue STATIC
+    ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 
 add_definitions(-DAPPLICATION_RESOURCE_PATH=\"assets/resources/\")
 add_definitions(-DDEMO_IMAGE_DIR=\"assets/resources/images/\")
@@ -124,6 +124,7 @@ target_link_libraries(native-activity
         ${DALI_ADAPTOR_LDFLAGS}
         ${DALI_CORE_LDFLAGS}
         ${FONTCONFIG_LDFLAGS}
+        native_app_glue
         android
         log
         EGL
