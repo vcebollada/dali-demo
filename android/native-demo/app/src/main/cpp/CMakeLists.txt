@@ -52,7 +52,10 @@ else()
 set(ENABLE_TRACE OFF)
 endif()
 
-pkg_check_modules(FONTCONFIG fontconfig REQUIRED NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH)
+# this will do for now, need proper cmake build for demos with autogen of studio projects or gradle files
+file(COPY ${DALI_DIR}/dali-demo/resources DESTINATION ${DALI_DIR}/dali-env/android/files/)
+file(COPY ${DALI_DIR}/dali-demo/resources/images DESTINATION ${DALI_DIR}/dali-env/android/files/)
+
 pkg_check_modules(DALI_CORE dali-core REQUIRED NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH)
 pkg_check_modules(DALI_ADAPTOR dali-adaptor REQUIRED NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH)
 pkg_check_modules(DALI_TOOLKIT dali-toolkit REQUIRED NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH)
@@ -123,8 +126,8 @@ target_link_libraries(native-activity
         ${DALI_TOOLKIT_LDFLAGS}
         ${DALI_ADAPTOR_LDFLAGS}
         ${DALI_CORE_LDFLAGS}
-        ${FONTCONFIG_LDFLAGS}
         native_app_glue
+        z
         android
         log
         EGL

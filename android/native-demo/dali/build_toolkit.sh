@@ -15,7 +15,7 @@ fi
 export PREFIX=${DALI_DIR}/dali-env/android
 export PKG_CONFIG_LIBDIR=${ANDROID_NDK}/prebuilt/linux-x86_64/lib/pkgconfig
 export PKG_CONFIG_PATH=${PREFIX}/lib/${ANDROID_ABI}/pkgconfig
-export DALI_DATA_RO_DIR=/data/data/com.sec.dali_demo/files
+export DALI_DATA_RO_DIR=assets
 export DALI_DATA_RW_DIR=/data/data/com.sec.dali_demo/files
 export DALI_DATA_RO_INSTALL_DIR=${PREFIX}/files
 export DALI_DATA_RW_INSTALL_DIR=${PREFIX}/files

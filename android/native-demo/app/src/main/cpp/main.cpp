@@ -341,10 +341,12 @@ void ExtractFontConfig( struct android_app* state, std::string assetFontConfig, 
 
     std::string fontConfig = std::string( buffer, length );
     int i = fontConfig.find("~");
-    if( i != std::string::npos )
-      fontConfig.replace( i + strlen("~"), 0, fontsPath );
+    if( i != std::string::npos ) {
+      std::string filesDir = state->activity->internalDataPath;
+      fontConfig.replace(i, 1, filesDir);
+    }
 
-    std::string fontsFontConfig = fontsPath + "/fonts.conf";
+    std::string fontsFontConfig = fontsPath;
     FILE* file = fopen( fontsFontConfig.c_str(), "wb" );
     if( file )
     {
@@ -363,9 +365,16 @@ void android_main( struct android_app* state )
 {
     std::string callParam = GetCallParameter( state );
     std::string filesDir = state->activity->internalDataPath;
+    setenv( "HOME", state->activity->internalDataPath, 1 );
+    chdir( "~" );
+
+    char cwd[PATH_MAX];
+    if (getcwd(cwd, sizeof(cwd)) != NULL) {
+      printf("Current working dir: %s\n", cwd);
+    }
 
     struct stat st = { 0 };
-    std::string fontconfigPath = filesDir + ".fonts";
+    std::string fontconfigPath = filesDir + "/fonts";
     setenv( "FONTCONFIG_PATH", fontconfigPath.c_str(), 1 );
     std::string fontconfigFile = fontconfigPath + "/fonts.conf";
     setenv( "FONTCONFIG_FILE", fontconfigFile.c_str(), 1 );
@@ -374,9 +383,12 @@ void android_main( struct android_app* state )
     if( stat( fontconfigPath.c_str(), &st ) == -1 )
     {
        mkdir( fontconfigPath.c_str(), S_IRWXU );
-       ExtractFontConfig( state, ".fonts/fonts.conf", fontconfigPath );
-       ExtractAssets( state, ".fonts/dejavu", fontconfigPath + "/dejavu" );
-       ExtractAssets( state, ".fonts/tizen", fontconfigPath + "/tizen" );
+       ExtractFontConfig( state, "fonts/fonts.conf", fontconfigPath + "/fonts.conf");
+       ExtractFontConfig( state, "fonts/fonts.dtd", fontconfigPath + "/fonts.dtd" );
+       ExtractFontConfig( state, "fonts/local.conf", fontconfigPath + "/local.conf");
+       ExtractAssets( state, "fonts/dejavu", fontconfigPath + "/dejavu" );
+       ExtractAssets( state, "fonts/tizen", fontconfigPath + "/tizen" );
+       ExtractAssets( state, "fonts/bitmap", fontconfigPath + "/bitmap" );
     }
 
 /*
