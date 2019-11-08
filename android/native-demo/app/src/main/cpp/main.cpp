@@ -134,12 +134,10 @@ std::string startOnQuit;
 #include <examples/simple-bitmap-font-text-label/simple-text-label-example.cpp>
 #include <examples/simple-text-label/simple-text-label-example.cpp>
 #include <examples/simple-text-field/simple-text-field.cpp>
+#include <examples/text-fonts/text-fonts-example.cpp>
 #include <examples/simple-text-visual/simple-text-visual-example.cpp>
 #include <examples/simple-visuals-control/simple-visuals-example.cpp>
-/*
 #include <examples/simple-text-renderer/simple-text-renderer-example.cpp>
- error: undefined reference to 'Dali::TextAbstraction::Internal::TextRenderer
-*/
 // ./dali-adaptor/dali/public-api/adaptor-framework/native-image-source.cpp:111: error: undefined reference to 'Dali::Internal::Adaptor::GetNativeImageSourceFactory()'
 #include <examples/scroll-view/scroll-view-example.cpp>
 #include <examples/shadows-and-lights/shadows-and-lights-example.cpp>
@@ -148,7 +146,6 @@ std::string startOnQuit;
 #include <examples/styling/style-example.cpp>
 #include <examples/text-editor/text-editor-example.cpp>
 #include <examples/text-field/text-field-example.cpp>
-#include <examples/text-fonts/text-fonts-example.cpp>
 #include <examples/text-label-emojis/text-label-emojis.cpp>
 #include <examples/text-label-multi-language/text-label-multi-language-example.cpp>
 #include <examples/text-label/text-label-example.cpp>
@@ -572,6 +569,8 @@ void android_main( struct android_app* state )
       status = SimpleTextFieldExample::main( 0, nullptr );
     else if ( callParam == "simple-text-label.example" )
       status = SimpleTextLabelExample::main( 0, nullptr );
+    else if ( callParam == "simple-text-renderer.example" )
+      status = SimpleTextRendererExample::main( 0, nullptr );
     else if ( callParam == "simple-text-visual.example" )
       status = SimpleTextVisualExample::main( 0, nullptr );
     else if ( callParam == "simple-visuals-control.example" )
