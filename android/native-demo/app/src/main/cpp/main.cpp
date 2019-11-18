@@ -541,6 +541,8 @@ void android_main( struct android_app* state )
       status = PerfScrollExample::main( 0, nullptr );
     else if ( callParam == "popup.example" )
       status = PopupExample::main( 0, nullptr );
+    else if ( callParam == "point-mesh.example" )
+      status = PointMeshExample::main( 0, nullptr );
     else if ( callParam == "pivot.example" )
       status = PivotExample::main( 0, nullptr );
     else if ( callParam == "primitive-shapes.example" )
@@ -586,12 +588,16 @@ void android_main( struct android_app* state )
     }
     else if ( callParam == "text-field.example" )
       status = TextFieldExample::main( 0, nullptr );
+    else if ( callParam == "text-fonts.example" )
+      status = TextFontsExample::main( 0, nullptr );
     else if ( callParam == "text-label.example" )
       status = TextLabelExample::main( 0, nullptr );
     else if ( callParam == "text-label-multi-language.example" )
       status = TextLabelMultiLanguageExample::main( 0, nullptr );
     else if ( callParam == "text-label-emojis.example" )
       status = TextLabelEmojisExample::main( 0, nullptr );
+    else if ( callParam == "text-overlap.example" )
+      status = TextOverlapExample::main( 0, nullptr );
     else if ( callParam == "text-scrolling.example" )
       status = TextScrollingExample::main( 0, nullptr );
     else if ( callParam == "remote-image-loading.example" )

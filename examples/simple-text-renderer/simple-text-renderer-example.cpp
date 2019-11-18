@@ -299,10 +299,10 @@ public:
     textParameters.fontSlant = "";
     textParameters.layout = "circular";
     textParameters.textColor = Color::BLACK;
-    textParameters.fontSize = 25.f;
-    textParameters.textWidth = 360u;
-    textParameters.textHeight = 360u;
-    textParameters.radius = 180u;
+    textParameters.fontSize = 10.f;
+    textParameters.textWidth = 800u;
+    textParameters.textHeight = 800u;
+    textParameters.radius = 400u;
     textParameters.beginAngle = 15.f;
     textParameters.incrementAngle = 360.f;
     textParameters.ellipsisEnabled = true;
@@ -319,7 +319,7 @@ public:
     actor.SetAnchorPoint( AnchorPoint::CENTER );
     actor.SetParentOrigin( ParentOrigin::CENTER );
     actor.SetPosition( 0.f, 0.f);
-    actor.SetSize( 360.f, 360.f );
+    actor.SetSize( 800.f, 800.f );
     actor.SetColor( Color::WHITE );
 
     actor.AddRenderer( renderer );

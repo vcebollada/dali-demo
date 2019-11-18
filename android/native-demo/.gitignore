@@ -1,0 +1,6 @@
+app/release
+app/debug
+gradle/wrapper
+gradlew
+gradlew.bat
+.google
