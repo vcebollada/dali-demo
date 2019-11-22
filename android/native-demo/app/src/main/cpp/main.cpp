@@ -24,7 +24,7 @@
 #include <android_native_app_glue.h>
 #include <dali/devel-api/adaptor-framework/application-devel.h>
 #include <dali/integration-api/debug.h>
-#include <dali/integration-api/android/android-framework.h>
+#include <dali/integration-api/adaptor-framework/android/android-framework.h>
 
 // from android_native_app_glue.c
 #ifndef NDEBUG
@@ -620,6 +620,7 @@ void android_main( struct android_app* state )
       system( stream.str().c_str() );
     }
 
+    Dali::Integration::AndroidFramework::Delete();
     // TODO: We need to kill the application process manually, DALi cannot restart in the same process due to memory leaks
     std::exit( status );
 }
