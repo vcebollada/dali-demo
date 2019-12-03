@@ -3,16 +3,28 @@ cmake_minimum_required(VERSION 3.4.1)
 get_filename_component(DALI_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../.." ABSOLUTE)
 get_filename_component(DALI_LOCAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../../dali" ABSOLUTE)
 
+# we need to build packages if the pkg config folder doesn't exist yet,
+# otherwise the following build won't find the packages
+if (NOT EXISTS "${DALI_DIR}/dali-env/android" )
+  execute_process (
+          COMMAND bash -c "PREFIX=${DALI_DIR}/dali-env/android ANDROID_ABI=armeabi-v7a ANDROID_PLATFORM=26 DEBUG=1 ./buildall.sh"
+          WORKING_DIRECTORY ${DALI_DIR}/android-dependencies/cmake
+  )
+
+  execute_process (
+          COMMAND bash -c "DEBUG=1 ./build.sh"
+          WORKING_DIRECTORY ${DALI_LOCAL_DIR}
+  )
+endif()
+
 # set pkg config
 set(ENV{PKG_CONFIG_PATH}  "${DALI_DIR}/dali-env/android/lib/${ANDROID_ABI}/pkgconfig:$ENV{PKG_CONFIG_PATH}")
-MESSAGE(STATUS "PKG_CONFIG_PATH=$ENV{PKG_CONFIG_PATH}")
 find_package(PkgConfig REQUIRED)
 
 set(ANDROID_SDK $ENV{ANDROID_SDK})
 set(ANDROID_NDK $ENV{ANDROID_NDK})
 
 # build native_app_glue as a static lib
-#set(${CMAKE_C_FLAGS}, "${CMAKE_C_FLAGS}")
 add_library(native_app_glue STATIC
     ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 
@@ -47,18 +59,26 @@ include_directories(${DALI_DIR}/dali-env/android/include/dali)
 include_directories(${DALI_DIR}/dali-demo)
 
 if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-set(ENABLE_TRACE ON)
+  set(ENABLE_TRACE ON)
 else()
-set(ENABLE_TRACE OFF)
+  set(ENABLE_TRACE OFF)
 endif()
-
-# this will do for now, need proper cmake build for demos with autogen of studio projects or gradle files
-file(COPY ${DALI_DIR}/dali-demo/resources DESTINATION ${DALI_DIR}/dali-env/android/files/)
-file(COPY ${DALI_DIR}/dali-demo/resources/images DESTINATION ${DALI_DIR}/dali-env/android/files/)
 
 pkg_check_modules(DALI_CORE dali-core REQUIRED NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH)
 pkg_check_modules(DALI_ADAPTOR dali-adaptor REQUIRED NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH)
 pkg_check_modules(DALI_TOOLKIT dali-toolkit REQUIRED NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH)
+
+add_custom_command(
+        TARGET native-activity PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${DALI_DIR}/dali-demo/resources
+        ${DALI_DIR}/dali-env/android/files/resources)
+
+add_custom_command(
+        TARGET native-activity PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${DALI_DIR}/dali-demo/resources/images
+        ${DALI_DIR}/dali-env/android/files/images)
 
 add_library(contact-cards-example-files STATIC
         ${DALI_DIR}/dali-demo/examples/contact-cards/clipped-image.cpp
