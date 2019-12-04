@@ -620,7 +620,6 @@ void android_main( struct android_app* state )
       system( stream.str().c_str() );
     }
 
-    Dali::Integration::AndroidFramework::Delete();
     // TODO: We need to kill the application process manually, DALi cannot restart in the same process due to memory leaks
     std::exit( status );
 }
