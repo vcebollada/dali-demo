@@ -8,16 +8,23 @@ SET(DEMO_SRCS
   "${ROOT_SRC_DIR}/shared/dali-table-view.cpp"
 )
 
-IF(ANDROID)
+IF(WIN32)
   SET(DEMO_SRCS
     ${DEMO_SRCS}
-    "${ROOT_SRC_DIR}/shared/execute-process-android.cpp"
+    "${ROOT_SRC_DIR}/shared/execute-process-win.cpp"
   )
-ELSE()
-  SET(DEMO_SRCS
-    ${DEMO_SRCS}
-    "${ROOT_SRC_DIR}/shared/execute-process-unix.cpp"
-  )
+ELSEIF(UNIX)
+  IF(ANDROID)
+    SET(DEMO_SRCS
+      ${DEMO_SRCS}
+      "${ROOT_SRC_DIR}/shared/execute-process-android.cpp"
+    )
+  ELSE()
+    SET(DEMO_SRCS
+      ${DEMO_SRCS}
+      "${ROOT_SRC_DIR}/shared/execute-process-unix.cpp"
+    )
+  ENDIF()
 ENDIF()
 
 IF(SHARED)
@@ -26,7 +33,7 @@ ELSE()
   ADD_EXECUTABLE(${PROJECT_NAME} ${DEMO_SRCS})
 ENDIF()
 
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${REQUIRED_PKGS_LDFLAGS} -pie)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${REQUIRED_LIBS})
 
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${BINDIR})
 

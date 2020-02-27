@@ -8,16 +8,23 @@ SET(TESTS_REEL_SRCS
   "${ROOT_SRC_DIR}/shared/dali-table-view.cpp"
 )
 
-IF(ANDROID)
+IF(WIN32)
   SET(TESTS_REEL_SRCS
     ${TESTS_REEL_SRCS}
-    "${ROOT_SRC_DIR}/shared/execute-process-android.cpp"
+    "${ROOT_SRC_DIR}/shared/execute-process-win.cpp"
   )
-ELSE()
-  SET(TESTS_REEL_SRCS
-    ${TESTS_REEL_SRCS}
-    "${ROOT_SRC_DIR}/shared/execute-process-unix.cpp"
-  )
+ELSEIF(UNIX)
+  IF(ANDROID)
+    SET(TESTS_REEL_SRCS
+      ${TESTS_REEL_SRCS}
+      "${ROOT_SRC_DIR}/shared/execute-process-android.cpp"
+    )
+  ELSE()
+    SET(TESTS_REEL_SRCS
+      ${TESTS_REEL_SRCS}
+      "${ROOT_SRC_DIR}/shared/execute-process-unix.cpp"
+    )
+  ENDIF()
 ENDIF()
 
 IF(SHARED)
@@ -25,7 +32,8 @@ IF(SHARED)
 ELSE()
   ADD_EXECUTABLE(dali-tests ${TESTS_REEL_SRCS})
 ENDIF()
-TARGET_LINK_LIBRARIES(dali-tests ${REQUIRED_PKGS_LDFLAGS} -pie)
+
+TARGET_LINK_LIBRARIES(dali-tests ${REQUIRED_LIBS})
 
 INSTALL(TARGETS dali-tests DESTINATION ${BINDIR})
 
